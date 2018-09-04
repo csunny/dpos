@@ -1,6 +1,6 @@
 package main
 
-import "github.com/csunny/argo/src/dpos"
+import "github.com/csunny/dpos"
 
 func main()  {
 	dpos.Run()

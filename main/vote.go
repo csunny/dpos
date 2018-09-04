@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/csunny/argo/src/dpos/tools"
+	"github.com/csunny/dpos/tools"
 )
-func main()  {
+func main(){
 	tools.Vote()
 }
