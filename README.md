@@ -1,28 +1,27 @@
-# 实现一个简易的DPOS算法
+# Implement a simple blockchain use dpos algorithm
+
+## Architecture Design
+- Create a P2P Conn-pool
+- BlockChain Generate
+- Note Manage And Vote
+- Pick Node
+- Write Block On Blockchain
 
 
-## 架构设计
-- 创建一个P2P连接池
-- BlockChain生成
-- 节点管理与投票
-- 选取节点生成区块
-- 区块上链
-
-
-## 代码运行
+## RUN 
 ```
 git clone git@github.com:csunny/dpos.git
 make dep
 go run main/dpos.go -l 3000 -secio
 ```
 
-## 投票
+## Vote
 ```
 go run main/vote.go -name aaa -v 30
 ```
 
-# 说明文档
-[文档](https://xiaozhuanlan.com/topic/3245810967)
+# Document
+[Doc](https://xiaozhuanlan.com/topic/3245810967)
 
 # Licence 
 MIT
