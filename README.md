@@ -1,4 +1,5 @@
 # Implement a simple blockchain use dpos algorithm
+ <a href="https://travis-ci.org/csunny/dpos"><img src="https://travis-ci.org/csunny/dpos.svg?branch=master" /></a>
 
 ## Architecture Design
 - Create a P2P Conn-pool
