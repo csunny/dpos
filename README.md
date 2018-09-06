@@ -15,11 +15,16 @@ git clone git@github.com:csunny/dpos.git
 make dep
 go run main/dpos.go -l 3000 -secio
 ```
+![]()
+
+connect multi peer 
+![]()
 
 ## Vote
 ```
 go run main/vote.go -name aaa -v 30
 ```
+![]()
 
 # Document
 [Doc](https://xiaozhuanlan.com/topic/3245810967)
