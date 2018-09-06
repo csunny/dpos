@@ -15,7 +15,7 @@ git clone git@github.com:csunny/dpos.git
 make dep
 go run main/dpos.go -l 3000 -secio
 ```
-![]()
+![](https://github.com/csunny/dpos/blob/master/imgs/dpos_host.png)
 
 connect multi peer 
 ![]()
