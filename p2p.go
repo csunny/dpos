@@ -28,16 +28,22 @@ import (
 	"github.com/davecgh/go-spew/spew"
 )
 
-const DefaultVote = 10
-const FileName = "config.ini"
+const (
+	// DefaultVote 节点默认的票数
+	DefaultVote = 10
+	// FileName 节点信息保存配置文件
+	FileName = "config.ini"
+)
 
 var mutex = &sync.Mutex{}
 
+//Validator 定义节点信息
 type Validator struct {
 	name string
 	vote int
 }
 
+// MakeBasicHost 构建P2P网络
 func MakeBasicHost(listenPort int, secio bool, randseed int64) (host.Host, error) {
 	var r io.Reader
 
@@ -85,6 +91,7 @@ func MakeBasicHost(listenPort int, secio bool, randseed int64) (host.Host, error
 	return basicHost, nil
 }
 
+// HandleStream  handler stream info
 func HandleStream(s net.Stream) {
 	log.Println("得到一个新的连接!", s.Conn().RemotePeer().Pretty())
 	// 将连接加入到
@@ -93,6 +100,7 @@ func HandleStream(s net.Stream) {
 	go writeData(rw)
 }
 
+// readData 读取数据输出到客户端
 func readData(rw *bufio.ReadWriter) {
 	for {
 		str, err := rw.ReadString('\n')
@@ -125,6 +133,7 @@ func readData(rw *bufio.ReadWriter) {
 	}
 }
 
+// writeData 将客户端数据处理写入BlockChain
 func writeData(rw *bufio.ReadWriter) {
 	// 启动一个协程处理终端同步
 	go func() {
@@ -186,6 +195,7 @@ func writeData(rw *bufio.ReadWriter) {
 	}
 }
 
+// Run 函数
 func Run() {
 
 	t := time.Now()
@@ -253,6 +263,7 @@ func Run() {
 	}
 }
 
+// SavePeer 将加入到网络中的节点信息保存到配置文件中，方便后续投票与选择
 func SavePeer(name string) {
 	vote := DefaultVote // 默认的投票数目
 	f, err := os.OpenFile(FileName, os.O_WRONLY|os.O_APPEND|os.O_CREATE, 0666)

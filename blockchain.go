@@ -10,8 +10,11 @@ import (
 	"time"
 )
 
+// BlockChain slice to storage Block 
 var BlockChain []Block
 
+// Block struct, A block contain 以下信息:
+// Index 索引、Timestamp(时间戳)、BPM、Hash(自己的hash值)、PreHash(上一个块的Hash值)、validator(此区块的生产者信息)
 type Block struct {
 	Index     int
 	Timestamp string
@@ -21,7 +24,7 @@ type Block struct {
 	validator string
 }
 
-// 计算string的hash值
+// CaculateHash 计算string的hash值
 func CaculateHash(s string) string {
 	h := sha256.New()
 	h.Write([]byte(s))
@@ -29,11 +32,13 @@ func CaculateHash(s string) string {
 	return hex.EncodeToString(hashed)
 }
 
+// CaculateBlockHash 计算Block的hash值
 func CaculateBlockHash(block Block) string {
 	record := string(block.Index) + block.Timestamp + string(block.BPM) + block.PrevHash
 	return CaculateHash(record)
 }
 
+// GenerateBlock 根据上一个区块信息，生成新的区块
 func GenerateBlock(oldBlock Block, BPM int, address string) (Block, error) {
 	var newBlock Block
 	t := time.Now()
@@ -48,6 +53,7 @@ func GenerateBlock(oldBlock Block, BPM int, address string) (Block, error) {
 	return newBlock, nil
 }
 
+// IsBlockValid 校验区块是否合法
 func IsBlockValid(newBlock, oldBlock Block) bool {
 	if oldBlock.Index+1 != newBlock.Index {
 		return false

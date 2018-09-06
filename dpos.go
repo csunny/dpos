@@ -7,9 +7,10 @@ import (
 	"strconv"
 	"sort"
 )
+// BPCount 区块生产者的数量
+const BPCount = 5 
 
-const BPCount = 5
-
+// PickWinner 根据投票数量选择生成区块的节点
 func PickWinner() (bp string) {
 	// 选择BlockProducer
 
