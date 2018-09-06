@@ -18,13 +18,13 @@ go run main/dpos.go -l 3000 -secio
 ![](https://github.com/csunny/dpos/blob/master/imgs/dpos_host.png)
 
 connect multi peer 
-![]()
+![](https://github.com/csunny/dpos/blob/master/imgs/dpos_8.png)
 
 ## Vote
 ```
 go run main/vote.go -name aaa -v 30
 ```
-![]()
+![](https://github.com/csunny/dpos/blob/master/imgs/vote.png)
 
 # Document
 [Doc](https://xiaozhuanlan.com/topic/3245810967)
