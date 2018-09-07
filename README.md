@@ -12,8 +12,10 @@
 ## RUN 
 ```
 git clone git@github.com:csunny/dpos.git
+
+cd dpos    // 切换到源码路径下
 make dep
-go run main/dpos.go -l 3000 -secio
+go build main/dpos.go  -o dpos
 ```
 ![](https://github.com/csunny/dpos/blob/master/imgs/dpos_host.png)
 
@@ -22,7 +24,7 @@ connect multi peer
 
 ## Vote
 ```
-go run main/vote.go -name aaa -v 30
+./dpos vote -name QmaxEdbKW4x9mP2vX15zL9fyEsp9b9yV48zwtdrpYddfxe -v 30
 ```
 ![](https://github.com/csunny/dpos/blob/master/imgs/vote.png)
 
