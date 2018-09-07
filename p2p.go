@@ -11,13 +11,13 @@ import (
 	"strconv"
 	"time"
 	"crypto/rand"
-	"flag"
-	"log"
 	"bufio"
 	"sync"
 	"encoding/json"
 	"context"
 	mrand "math/rand"
+	"github.com/urfave/cli"
+	"github.com/outbrain/golib/log"
 	"github.com/libp2p/go-libp2p-net"
 	"github.com/libp2p/go-libp2p-host"
 	"github.com/libp2p/go-libp2p-crypto"
@@ -26,6 +26,7 @@ import (
 	ma "github.com/multiformats/go-multiaddr"
 	pstore "github.com/libp2p/go-libp2p-peerstore"
 	"github.com/davecgh/go-spew/spew"
+
 )
 
 const (
@@ -41,6 +42,40 @@ var mutex = &sync.Mutex{}
 type Validator struct {
 	name string
 	vote int
+}
+
+// NewNode 创建新的节点加入到P2P网络
+var NewNode = cli.Command{
+	Name: "new",
+	Usage: "add a new node to p2p network",
+	Flags: []cli.Flag{
+		cli.IntFlag{
+			Name: "port",
+			Value: 3000,
+			Usage: "新创建的节点端口号",
+		},
+		cli.StringFlag{
+			Name: "target",
+			Value: "",
+			Usage: "目标节点",
+		},
+		cli.BoolFlag{
+			Name: "secio",
+			Usage: "是否打开secio",
+		},
+		cli.Int64Flag{
+			Name: "seed",
+			Value: 0,
+			Usage: "生产随机数",
+		},
+	},
+	Action: func(context *cli.Context) error {
+		if err := Run(context); err != nil{
+			return err
+		}
+		return nil
+	},
+
 }
 
 // MakeBasicHost 构建P2P网络
@@ -80,20 +115,20 @@ func MakeBasicHost(listenPort int, secio bool, randseed int64) (host.Host, error
 	addr := basicHost.Addrs()[0]
 	fullAddr := addr.Encapsulate(hostAddr)
 
-	log.Printf("我是: %s\n", fullAddr)
+	log.Infof("我是: %s\n", fullAddr)
 	SavePeer(basicHost.ID().Pretty())
 
 	if secio {
-		log.Printf("现在在一个新终端运行命令: 'go run main/dpos.go -l %d -d %s -secio'\n ", listenPort+1, fullAddr)
+		fmt.Printf("现在在一个新终端运行命令: './dpos new --port %d --target %s -secio' \n", listenPort+1, fullAddr)
 	} else {
-		log.Printf("现在在一个新的终端运行命令: 'go run main/dpos.go -l %d -d %s '", listenPort+1, fullAddr)
+		fmt.Printf("现在在一个新的终端运行命令: './dpos new --port %d --target %s' \n", listenPort+1, fullAddr)
 	}
 	return basicHost, nil
 }
 
 // HandleStream  handler stream info
 func HandleStream(s net.Stream) {
-	log.Println("得到一个新的连接!", s.Conn().RemotePeer().Pretty())
+	log.Infof("得到一个新的连接: %s", s.Conn().RemotePeer().Pretty())
 	// 将连接加入到
 	rw := bufio.NewReadWriter(bufio.NewReader(s), bufio.NewWriter(s))
 	go readData(rw)
@@ -105,7 +140,7 @@ func readData(rw *bufio.ReadWriter) {
 	for {
 		str, err := rw.ReadString('\n')
 		if err != nil {
-			log.Fatal(err)
+			log.Errorf(err.Error())
 		}
 
 		if str == "" {
@@ -115,7 +150,7 @@ func readData(rw *bufio.ReadWriter) {
 			chain := make([]Block, 0)
 
 			if err := json.Unmarshal([]byte(str), &chain); err != nil {
-				log.Fatal(err)
+				log.Errorf(err.Error())
 			}
 
 			mutex.Lock()
@@ -123,7 +158,7 @@ func readData(rw *bufio.ReadWriter) {
 				BlockChain = chain
 				bytes, err := json.MarshalIndent(BlockChain, "", " ")
 				if err != nil {
-					log.Fatal(err)
+					log.Errorf(err.Error())
 				}
 
 				fmt.Printf("\x1b[32m%s\x1b[0m> ", string(bytes))
@@ -142,7 +177,7 @@ func writeData(rw *bufio.ReadWriter) {
 			mutex.Lock()
 			bytes, err := json.Marshal(BlockChain)
 			if err != nil {
-				log.Println(err)
+				log.Errorf(err.Error())
 			}
 			mutex.Unlock()
 
@@ -158,22 +193,22 @@ func writeData(rw *bufio.ReadWriter) {
 		fmt.Print(">")
 		sendData, err := stdReader.ReadString('\n')
 		if err != nil {
-			log.Fatal(err)
+			log.Errorf(err.Error())
 		}
 
 		sendData = strings.Replace(sendData, "\n", "", -1)
 		bpm, err := strconv.Atoi(sendData)
 		if err != nil {
-			log.Fatal(err)
+			log.Errorf(err.Error())
 		}
 
 		// pick选择block生产者
 		address := PickWinner()
-		log.Printf("******节点%s获得了记账权利******", address)
+		log.Infof("******节点 %s 获得了记账权利******", address)
 		lastBlock := BlockChain[len(BlockChain)-1]
 		newBlock, err := GenerateBlock(lastBlock, bpm, address)
 		if err != nil{
-			log.Fatal(err)
+			log.Errorf(err.Error())
 		}
 
 		if IsBlockValid(newBlock, lastBlock){
@@ -186,7 +221,7 @@ func writeData(rw *bufio.ReadWriter) {
 
 		bytes, err := json.Marshal(BlockChain)
 		if err != nil {
-			log.Println(err)
+			log.Errorf(err.Error())
 		}
 		mutex.Lock()
 		rw.WriteString(fmt.Sprintf("%s\n", string(bytes)))
@@ -196,7 +231,7 @@ func writeData(rw *bufio.ReadWriter) {
 }
 
 // Run 函数
-func Run() {
+func Run(ctx *cli.Context) error {
 
 	t := time.Now()
 	genesisBlock := Block{}
@@ -204,40 +239,38 @@ func Run() {
 	BlockChain = append(BlockChain, genesisBlock)
 
 	// 命令行传参
-	listenF := flag.Int("l", 0, "等待节点加入")
-	target := flag.String("d", "", "连接目标节点")
-	secio := flag.Bool("secio", false, "打开secio")
-	seed := flag.Int64("seed", 0, "生产随机数")
-	flag.Parse()
+	port := ctx.Int("port")
+	target := ctx.String("target")
+	secio := ctx.Bool("secio")
+	seed := ctx.Int64("seed")
 
-	if *listenF == 0 {
+	if port == 0 {
 		log.Fatal("请提供一个端口号")
 	}
-
 	// 构造一个host 监听地址
-	ha, err := MakeBasicHost(*listenF, *secio, *seed)
+	ha, err := MakeBasicHost(port, secio, seed)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
-	if *target == "" {
-		log.Println("等待节点连接...")
+	if target == "" {
+		log.Info("等待节点连接...")
 		ha.SetStreamHandler("/p2p/1.0.0", HandleStream)
 		select {}
 	} else {
 		ha.SetStreamHandler("/p2p/1.0.0", HandleStream)
-		ipfsaddr, err := ma.NewMultiaddr(*target)
+		ipfsaddr, err := ma.NewMultiaddr(target)
 		if err != nil {
-			log.Fatal(err)
+			return err
 		}
 		pid, err := ipfsaddr.ValueForProtocol(ma.P_IPFS)
 		if err != nil {
-			log.Fatal(err)
+			return err
 		}
 
 		peerid, err := peer.IDB58Decode(pid)
 		if err != nil {
-			log.Fatal(err)
+			return err
 		}
 
 		targetPeerAddr, _ := ma.NewMultiaddr(
@@ -246,13 +279,13 @@ func Run() {
 
 		// 现在我们有一个peerID和一个targetaddr，所以我们添加它到peerstore中。 让libP2P知道如何连接到它。
 		ha.Peerstore().AddAddr(peerid, targetAddr, pstore.PermanentAddrTTL)
-		log.Println("打开Stream")
+		log.Info("打开Stream")
 
 		// 构建一个新的stream从hostB到hostA
 		// 使用了相同的/p2p/1.0.0 协议
 		s, err := ha.NewStream(context.Background(), peerid, "/p2p/1.0.0")
 		if err != nil {
-			log.Fatal(err)
+			return err
 		}
 
 		rw := bufio.NewReadWriter(bufio.NewReader(s), bufio.NewWriter(s))
@@ -261,6 +294,7 @@ func Run() {
 		go readData(rw)
 		select {}
 	}
+	return nil
 }
 
 // SavePeer 将加入到网络中的节点信息保存到配置文件中，方便后续投票与选择
@@ -268,7 +302,7 @@ func SavePeer(name string) {
 	vote := DefaultVote // 默认的投票数目
 	f, err := os.OpenFile(FileName, os.O_WRONLY|os.O_APPEND|os.O_CREATE, 0666)
 	if err != nil {
-		log.Fatal(err)
+		log.Errorf(err.Error())
 	}
 	defer f.Close()
 
@@ -276,3 +310,5 @@ func SavePeer(name string) {
 	f.WriteString(name + ":" + strconv.Itoa(vote) + "\n")
 
 }
+
+
