@@ -4,29 +4,28 @@
 package dpos
 
 import (
-	"io"
-	"fmt"
-	"os"
-	"strings"
-	"strconv"
-	"time"
-	"crypto/rand"
 	"bufio"
-	"sync"
-	"encoding/json"
 	"context"
-	mrand "math/rand"
-	"github.com/urfave/cli"
-	"github.com/outbrain/golib/log"
-	"github.com/libp2p/go-libp2p-net"
-	"github.com/libp2p/go-libp2p-host"
-	"github.com/libp2p/go-libp2p-crypto"
-	"github.com/libp2p/go-libp2p"
-	"github.com/libp2p/go-libp2p-peer"
-	ma "github.com/multiformats/go-multiaddr"
-	pstore "github.com/libp2p/go-libp2p-peerstore"
+	"crypto/rand"
+	"encoding/json"
+	"fmt"
 	"github.com/davecgh/go-spew/spew"
-
+	"github.com/libp2p/go-libp2p"
+	"github.com/libp2p/go-libp2p-crypto"
+	"github.com/libp2p/go-libp2p-host"
+	"github.com/libp2p/go-libp2p-net"
+	"github.com/libp2p/go-libp2p-peer"
+	pstore "github.com/libp2p/go-libp2p-peerstore"
+	ma "github.com/multiformats/go-multiaddr"
+	"github.com/outbrain/golib/log"
+	"github.com/urfave/cli"
+	"io"
+	mrand "math/rand"
+	"os"
+	"strconv"
+	"strings"
+	"sync"
+	"time"
 )
 
 const (
@@ -46,36 +45,35 @@ type Validator struct {
 
 // NewNode 创建新的节点加入到P2P网络
 var NewNode = cli.Command{
-	Name: "new",
+	Name:  "new",
 	Usage: "add a new node to p2p network",
 	Flags: []cli.Flag{
 		cli.IntFlag{
-			Name: "port",
+			Name:  "port",
 			Value: 3000,
 			Usage: "新创建的节点端口号",
 		},
 		cli.StringFlag{
-			Name: "target",
+			Name:  "target",
 			Value: "",
 			Usage: "目标节点",
 		},
 		cli.BoolFlag{
-			Name: "secio",
+			Name:  "secio",
 			Usage: "是否打开secio",
 		},
 		cli.Int64Flag{
-			Name: "seed",
+			Name:  "seed",
 			Value: 0,
 			Usage: "生产随机数",
 		},
 	},
 	Action: func(context *cli.Context) error {
-		if err := Run(context); err != nil{
+		if err := Run(context); err != nil {
 			return err
 		}
 		return nil
 	},
-
 }
 
 // MakeBasicHost 构建P2P网络
@@ -207,11 +205,11 @@ func writeData(rw *bufio.ReadWriter) {
 		log.Infof("******节点 %s 获得了记账权利******", address)
 		lastBlock := BlockChain[len(BlockChain)-1]
 		newBlock, err := GenerateBlock(lastBlock, bpm, address)
-		if err != nil{
+		if err != nil {
 			log.Errorf(err.Error())
 		}
 
-		if IsBlockValid(newBlock, lastBlock){
+		if IsBlockValid(newBlock, lastBlock) {
 			mutex.Lock()
 			BlockChain = append(BlockChain, newBlock)
 			mutex.Unlock()
@@ -306,9 +304,6 @@ func SavePeer(name string) {
 	}
 	defer f.Close()
 
-
 	f.WriteString(name + ":" + strconv.Itoa(vote) + "\n")
 
 }
-
-

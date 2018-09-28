@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-// BlockChain slice to storage Block 
+// BlockChain slice to storage Block
 var BlockChain []Block
 
 // Block struct, A block contain 以下信息:
