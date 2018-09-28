@@ -183,11 +183,6 @@ func (s *Swarm) DialPeer(ctx context.Context, p peer.ID) (inet.Conn, error) {
 func (s *Swarm) dialPeer(ctx context.Context, p peer.ID) (*Conn, error) {
 	log.Debugf("[%s] swarm dialing peer [%s]", s.local, p)
 	var logdial = lgbl.Dial("swarm", s.LocalPeer(), p, nil, nil)
-	err := p.Validate()
-	if err != nil {
-		return nil, err
-	}
-
 	if p == s.local {
 		log.Event(ctx, "swarmDialSelf", logdial)
 		return nil, ErrDialToSelf
@@ -207,15 +202,10 @@ func (s *Swarm) dialPeer(ctx context.Context, p peer.ID) (*Conn, error) {
 		return nil, ErrDialBackoff
 	}
 
-	// apply the DialPeer timeout
-	ctx, cancel := context.WithTimeout(ctx, inet.GetDialPeerTimeout(ctx))
-	defer cancel()
-
-	conn, err = s.dsync.DialLock(ctx, p)
+	conn, err := s.dsync.DialLock(ctx, p)
 	if err != nil {
 		return nil, err
 	}
-
 	log.Debugf("network for %s finished dialing %s", s.local, p)
 	return conn, err
 }
@@ -230,6 +220,9 @@ func (s *Swarm) doDial(ctx context.Context, p peer.ID) (*Conn, error) {
 	if c != nil {
 		return c, nil
 	}
+
+	ctx, cancel := context.WithTimeout(ctx, DialTimeout)
+	defer cancel()
 
 	logdial := lgbl.Dial("swarm", s.LocalPeer(), p, nil, nil)
 
@@ -325,7 +318,7 @@ func (s *Swarm) dial(ctx context.Context, p peer.ID) (*Conn, error) {
 		"localAddr":  connC.LocalMultiaddr(),
 		"remoteAddr": connC.RemoteMultiaddr(),
 	}
-	swarmC, err := s.addConn(connC, inet.DirOutbound)
+	swarmC, err := s.addConn(connC)
 	if err != nil {
 		logdial["error"] = err.Error()
 		connC.Close() // close the connection. didn't work out :(
@@ -405,12 +398,12 @@ func (s *Swarm) dialAddr(ctx context.Context, p peer.ID, addr ma.Multiaddr) (tra
 	}
 	log.Debugf("%s swarm dialing %s %s", s.local, p, addr)
 
-	tpt := s.TransportForDialing(addr)
-	if tpt == nil {
+	transport := s.TransportForDialing(addr)
+	if transport == nil {
 		return nil, ErrNoTransport
 	}
 
-	connC, err := tpt.Dial(ctx, addr, p)
+	connC, err := transport.Dial(ctx, addr, p)
 	if err != nil {
 		return nil, fmt.Errorf("%s --> %s dial attempt failed: %s", s.local, p, err)
 	}
@@ -418,7 +411,7 @@ func (s *Swarm) dialAddr(ctx context.Context, p peer.ID, addr ma.Multiaddr) (tra
 	// Trust the transport? Yeah... right.
 	if connC.RemotePeer() != p {
 		connC.Close()
-		err = fmt.Errorf("BUG in transport %T: tried to dial %s, dialed %s", p, connC.RemotePeer(), tpt)
+		err = fmt.Errorf("BUG in transport %T: tried to dial %s, dialed %s", p, connC.RemotePeer(), transport)
 		log.Error(err)
 		return nil, err
 	}

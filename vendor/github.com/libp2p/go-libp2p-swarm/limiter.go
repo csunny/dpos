@@ -18,10 +18,11 @@ type dialResult struct {
 }
 
 type dialJob struct {
-	addr ma.Multiaddr
-	peer peer.ID
-	ctx  context.Context
-	resp chan dialResult
+	addr    ma.Multiaddr
+	peer    peer.ID
+	ctx     context.Context
+	resp    chan dialResult
+	success bool
 }
 
 func (dj *dialJob) cancelled() bool {
@@ -34,7 +35,7 @@ func (dj *dialJob) cancelled() bool {
 }
 
 func (dj *dialJob) dialTimeout() time.Duration {
-	timeout := transport.DialTimeout
+	timeout := DialTimeout
 	if lowTimeoutFilters.AddrBlocked(dj.addr) {
 		timeout = DialTimeoutLocal
 	}
@@ -99,7 +100,7 @@ func (dl *dialLimiter) freePeerToken(dj *dialJob) {
 	}
 
 	waitlist := dl.waitingOnPeerLimit[dj.peer]
-	if len(waitlist) > 0 {
+	if !dj.success && len(waitlist) > 0 {
 		next := waitlist[0]
 		if len(waitlist) == 1 {
 			delete(dl.waitingOnPeerLimit, next.peer)

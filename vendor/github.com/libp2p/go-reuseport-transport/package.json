@@ -8,27 +8,27 @@
   },
   "gxDependencies": [
     {
-      "hash": "QmRREK2CAZ5Re2Bd9zZFG6FeYDppUWt5cMgsoUEp3ktgSr",
+      "hash": "Qmbi1CTJsbnBZjCEgc2otwu8cUFPsGpzWXG7edVCLZ7Gvk",
       "name": "go-log",
-      "version": "1.5.5"
+      "version": "1.5.2"
     },
     {
       "author": "whyrusleeping",
-      "hash": "QmNdh4rqBpEeboygJxeXoSjx7YJZzNE7Swn6Xt3pLUhbkC",
+      "hash": "QmYkx3VWoYeQJKEpZp13MxQYkWtLd9E6G4fqyyDCS76qcD",
       "name": "go-reuseport",
-      "version": "0.1.17"
+      "version": "0.1.15"
     },
     {
       "author": "multiformats",
-      "hash": "QmYmsdtJ3HsodkePE3eU3TsCaP2YvPZJ4LoXnNkDE5Tpt7",
+      "hash": "QmUxSEGbv2nmYNnfXi7839wwQqTN3kwQeUxe8dTjZWZs7J",
       "name": "go-multiaddr",
-      "version": "1.3.0"
+      "version": "1.2.7"
     },
     {
       "author": "multiformats",
-      "hash": "QmV6FjemM1K8oXjrvuq3wuVWWoU2TLDPmNnKrxHzY3v6Ai",
+      "hash": "QmNqRnejxJxjRroz7buhrjfU8i3yNBLa81hFtmf2pXEffN",
       "name": "go-multiaddr-net",
-      "version": "1.6.3"
+      "version": "1.6.1"
     }
   ],
   "gxVersion": "0.12.1",
@@ -36,6 +36,6 @@
   "license": "",
   "name": "go-reuseport-transport",
   "releaseCmd": "git commit -a -m \"gx publish $VERSION\"",
-  "version": "0.1.9"
+  "version": "0.1.6"
 }
 

@@ -19,7 +19,7 @@ go-libp2p-host
 ## Install
 
 ```sh
-make deps
+make install
 ```
 
 ## Contribute
