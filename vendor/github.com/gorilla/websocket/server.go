@@ -34,11 +34,9 @@ type Upgrader struct {
 	ReadBufferSize, WriteBufferSize int
 
 	// Subprotocols specifies the server's supported protocols in order of
-	// preference. If this field is not nil, then the Upgrade method negotiates a
+	// preference. If this field is set, then the Upgrade method negotiates a
 	// subprotocol by selecting the first match in this list with a protocol
-	// requested by the client. If there's no match, then no protocol is
-	// negotiated (the Sec-Websocket-Protocol header is not included in the
-	// handshake response).
+	// requested by the client.
 	Subprotocols []string
 
 	// Error specifies the function for generating HTTP error responses. If Error

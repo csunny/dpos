@@ -12,7 +12,7 @@ import (
 	"strconv"
 	"github.com/urfave/cli"
 	"github.com/outbrain/golib/log"
-	"github.com/csunny/argo/src/dpos"
+	"github.com/csunny/dpos"
 
 )
 

@@ -212,6 +212,7 @@ WAIT:
 	case <-timeout:
 		return 0, ErrTimeout
 	}
+	return 0, nil
 }
 
 // sendFlags determines any flags that are appropriate
