@@ -4,7 +4,7 @@
 ## Architecture Design
 - Create a P2P Conn-pool
 - BlockChain Generate
-- Note Manage And Vote
+- Node Manage And Vote
 - Pick Node
 - Write Block On Blockchain
 
