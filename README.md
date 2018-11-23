@@ -13,7 +13,7 @@
 ```
 git clone git@github.com:csunny/dpos.git
 
-cd dpos    // 切换到源码路径下
+cd dpos    //  change to source code path 
 go build main/dpos.go  -o dpos
 ```
 
