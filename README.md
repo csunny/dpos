@@ -14,7 +14,7 @@
 git clone git@github.com:csunny/dpos.git
 
 cd dpos    // 切换到源码路径下
-go build main/dpos.go  -o dpos
+go build main/dpos.go
 ```
 
 connect multi peer 
