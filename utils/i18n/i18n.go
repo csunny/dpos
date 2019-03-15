@@ -47,3 +47,21 @@ func loadSystemLanguage() string {
 	}
 	return pieces[0]
 }
+
+func findLanguage(root string, getLanguageFn func() string) string {
+	langStr := getLanguageFn()
+	translations := knownTranslations[root]
+
+	if translations != nil {
+		for ix := range translations {
+			if translations[ix] == langStr {
+				return langStr
+			}
+		}
+	}
+
+	err := fmt.Sprintf("Couldn't find translations for %s, using default", langStr)
+	fmt.Println(err)
+	return "default"
+}
+
