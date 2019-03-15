@@ -3,7 +3,6 @@ module github.com/csunny/dpos
 require (
 	github.com/agl/ed25519 v0.0.0-20170116200512-5312a6153412 // indirect
 	github.com/btcsuite/btcd v0.0.0-20180531025944-86fed781132a // indirect
-	github.com/coreos/go-semver v0.0.0-20180108230905-e214231b295a // indirect
 	github.com/davecgh/go-spew v1.1.1
 	github.com/fd/go-nat v1.0.0 // indirect
 	github.com/gogo/protobuf v0.0.0-20180509162441-30cf7ac33676 // indirect
@@ -53,6 +52,7 @@ require (
 	github.com/mattn/go-isatty v0.0.4 // indirect
 	github.com/minio/blake2b-simd v0.0.0-20160723061019-3f5f724cb5b1 // indirect
 	github.com/minio/sha256-simd v0.0.0-20171213220625-ad98a36ba0da // indirect
+	github.com/mitchellh/go-homedir v1.1.0 // indirect
 	github.com/mr-tron/base58 v0.0.0-20180621141132-4df4dc6e86a9 // indirect
 	github.com/multiformats/go-multiaddr v0.0.0-20180622215516-96804982667e
 	github.com/multiformats/go-multiaddr-dns v0.0.0-20180623005149-78f39e8892d4 // indirect
@@ -63,10 +63,10 @@ require (
 	github.com/onsi/gomega v1.4.3 // indirect
 	github.com/opentracing/opentracing-go v0.0.0-20180606204148-bd9c31933947 // indirect
 	github.com/outbrain/golib v0.0.0-20160315180704-2418949ac30d
-	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/satori/go.uuid v0.0.0-20180103174451-36e9d2ebbde5 // indirect
 	github.com/spaolacci/murmur3 v0.0.0-20180118202830-f09979ecbc72 // indirect
-	github.com/stretchr/testify v1.2.2 // indirect
+	github.com/spf13/cobra v0.0.3
+	github.com/spf13/viper v1.3.2 // indirect
 	github.com/urfave/cli v0.0.0-20180821064027-934abfb2f102
 	github.com/whyrusleeping/go-logging v0.0.0-20170515211332-0457bb6b88fc // indirect
 	github.com/whyrusleeping/go-multiplex v0.2.23 // indirect
@@ -77,8 +77,6 @@ require (
 	github.com/whyrusleeping/mafmt v0.0.0-20180611025256-794419fbc849 // indirect
 	github.com/whyrusleeping/multiaddr-filter v0.0.0-20160516205228-e903e4adabd7 // indirect
 	github.com/whyrusleeping/yamux v0.0.0-20180604094752-35d045d4429e // indirect
-	golang.org/x/crypto v0.0.0-20181203042331-505ab145d0a9 // indirect
 	golang.org/x/sys v0.0.0-20181212120007-b05ddf57801d // indirect
 	gopkg.in/check.v1 v1.0.0-20180628173108-788fd7840127 // indirect
-	gopkg.in/yaml.v2 v2.2.2 // indirect
 )
