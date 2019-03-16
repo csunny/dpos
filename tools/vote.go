@@ -86,6 +86,8 @@ func Vote(context *cli.Context) error {
 	if err != nil{
 		return err
 	}
+
+	defer file.Close()
 	file.WriteString(str)
 
 	return nil
