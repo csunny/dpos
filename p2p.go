@@ -6,26 +6,26 @@ package dpos
 import (
 	"bufio"
 	"context"
-	"crypto/rand"
+
+	// "crypto/rand"
 	"encoding/json"
 	"fmt"
-	"github.com/davecgh/go-spew/spew"
-	"github.com/libp2p/go-libp2p"
-	"github.com/libp2p/go-libp2p-crypto"
-	"github.com/libp2p/go-libp2p-host"
-	"github.com/libp2p/go-libp2p-net"
-	"github.com/libp2p/go-libp2p-peer"
-	pstore "github.com/libp2p/go-libp2p-peerstore"
-	ma "github.com/multiformats/go-multiaddr"
-	"github.com/outbrain/golib/log"
-	"github.com/urfave/cli"
 	"io"
-	mrand "math/rand"
 	"os"
 	"strconv"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/davecgh/go-spew/spew"
+	"github.com/libp2p/go-libp2p"
+	"github.com/libp2p/go-libp2p-core/network"
+	"github.com/libp2p/go-libp2p-core/peer"
+	host "github.com/libp2p/go-libp2p-host"
+	pstore "github.com/libp2p/go-libp2p-peerstore"
+	ma "github.com/multiformats/go-multiaddr"
+	"github.com/outbrain/golib/log"
+	"github.com/urfave/cli"
 )
 
 const (
@@ -80,21 +80,21 @@ var NewNode = cli.Command{
 func MakeBasicHost(listenPort int, secio bool, randseed int64) (host.Host, error) {
 	var r io.Reader
 
-	if randseed == 0 {
-		r = rand.Reader
-	} else {
-		r = mrand.New(mrand.NewSource(randseed))
-	}
+	// if randseed == 0 {
+	// 	r = rand.Reader
+	// } else {
+	// 	r = mrand.New(mrand.NewSource(randseed))
+	// }
 
 	// 生产一对公私钥
-	priv, _, err := crypto.GenerateKeyPairWithReader(crypto.RSA, 2048, r)
-	if err != nil {
-		return nil, err
-	}
+	// priv, _, err := crypto.GenerateKeyPairWithReader(crypto.RSA, 2048, r)
+	// if err != nil {
+	// 	return nil, err
+	// }
 
 	opts := []libp2p.Option{
 		libp2p.ListenAddrStrings(fmt.Sprintf("/ip4/127.0.0.1/tcp/%d", listenPort)),
-		libp2p.Identity(priv),
+		// libp2p.Identity(priv),
 	}
 
 	if !secio {
@@ -125,7 +125,7 @@ func MakeBasicHost(listenPort int, secio bool, randseed int64) (host.Host, error
 }
 
 // HandleStream  handler stream info
-func HandleStream(s net.Stream) {
+func HandleStream(s network.Stream) {
 	log.Infof("得到一个新的连接: %s", s.Conn().RemotePeer().Pretty())
 	// 将连接加入到
 	rw := bufio.NewReadWriter(bufio.NewReader(s), bufio.NewWriter(s))
