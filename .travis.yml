@@ -8,7 +8,6 @@ os:
   - osx
 script:
   - env GO111MODULE=on go build
-  - env GO111MODULE=on go test
 sudo: false
 notifications:
   - email: false
