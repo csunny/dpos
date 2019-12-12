@@ -6,11 +6,11 @@ package dpos
 import (
 	"bufio"
 	"context"
-
-	// "crypto/rand"
+	"crypto/rand"
 	"encoding/json"
 	"fmt"
 	"io"
+	mrand "math/rand"
 	"os"
 	"strconv"
 	"strings"
@@ -19,6 +19,7 @@ import (
 
 	"github.com/davecgh/go-spew/spew"
 	"github.com/libp2p/go-libp2p"
+	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
 	host "github.com/libp2p/go-libp2p-host"
@@ -80,21 +81,21 @@ var NewNode = cli.Command{
 func MakeBasicHost(listenPort int, secio bool, randseed int64) (host.Host, error) {
 	var r io.Reader
 
-	// if randseed == 0 {
-	// 	r = rand.Reader
-	// } else {
-	// 	r = mrand.New(mrand.NewSource(randseed))
-	// }
+	if randseed == 0 {
+		r = rand.Reader
+	} else {
+		r = mrand.New(mrand.NewSource(randseed))
+	}
 
 	// 生产一对公私钥
-	// priv, _, err := crypto.GenerateKeyPairWithReader(crypto.RSA, 2048, r)
-	// if err != nil {
-	// 	return nil, err
-	// }
+	priv, _, err := crypto.GenerateKeyPairWithReader(crypto.RSA, 2048, r)
+	if err != nil {
+		return nil, err
+	}
 
 	opts := []libp2p.Option{
 		libp2p.ListenAddrStrings(fmt.Sprintf("/ip4/127.0.0.1/tcp/%d", listenPort)),
-		// libp2p.Identity(priv),
+		libp2p.Identity(priv),
 	}
 
 	if !secio {
