@@ -12,6 +12,7 @@
 - Write Block On Blockchain
 
 ## Build 
+👏
 go build -o build/dpos  main/dpos.go
 
 ## RUN 
