@@ -3,7 +3,7 @@
 [![](https://img.shields.io/github/issues/csunny/dpos)](https://github.com/csunny/dpos/issues)
 [![](https://img.shields.io/github/stars/csunny/dpos)](https://github.com/csunny/dpos/star)
 [![](https://img.shields.io/github/forks/csunny/dpos)](https://github.com/csunny/dpos/fork)
-
+[![GoDoc](https://img.shields.io/badge/GoDoc-Reference-green)](https://godoc.org/github.com/csunny/dpos)
 ## Architecture Design
 - Create a P2P Conn-pool
 - BlockChain Generate
