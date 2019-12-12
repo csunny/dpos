@@ -1,5 +1,8 @@
 # Implement a simple blockchain use dpos algorithm
  <a href="https://travis-ci.org/csunny/dpos"><img src="https://travis-ci.org/csunny/dpos.svg?branch=master" /></a>
+[![](https://img.shields.io/github/issues/csunny/dpos)](https://github.com/csunny/dpos/issues)
+[![](https://img.shields.io/github/stars/csunny/dpos)](https://github.com/csunny/dpos/star)
+[![](https://img.shields.io/github/forks/csunny/dpos)](https://github.com/csunny/dpos/fork)
 
 ## Architecture Design
 - Create a P2P Conn-pool
@@ -32,5 +35,7 @@ connect multi peer
 [Doc](https://xiaozhuanlan.com/topic/3245810967)
 
 # Licence 
+[![](https://img.shields.io/github/license/csunny/dpos)](https://github.com/csunny/dpos/blob/master/LICENSE)
+
 MIT
 
