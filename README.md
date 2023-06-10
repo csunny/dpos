@@ -19,7 +19,7 @@ go build -o build/dpos  main/dpos.go
 ```
 git clone git@github.com:csunny/dpos.git
 
-cd dpos    // 切换到源码路径下
+cd dpos    
 go build main/dpos.go
 ```
 
